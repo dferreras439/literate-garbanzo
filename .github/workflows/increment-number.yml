@@ -5,37 +5,27 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight UTC
 
-permissions:
-  contents: write  # Grants write permission to contents
-
 jobs:
-  increment-number:
+  increment:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read and Increment Number
+      - name: Increment Number
         run: |
-          # Ensure the file exists
           if [ ! -f number.txt ]; then
             echo "0" > number.txt
           fi
-
-          # Read the number, increment it, and save it back
           number=$(cat number.txt)
-          new_number=$((number + 1))
-          echo $new_number > number.txt
-          echo "Incremented number to: $new_number"
+          echo $((number + 1)) > number.txt
+          echo "Updated number.txt to $(cat number.txt)"
 
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           git add number.txt
           git commit -m "Increment number to $(cat number.txt)"
           git push
