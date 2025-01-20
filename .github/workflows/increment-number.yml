@@ -12,13 +12,15 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Ensure full commit history is available
 
       - name: Set up Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Pull Latest Changes
+        run: |
+          git pull --rebase origin main  # Ensure the local branch is up-to-date
 
       - name: Increment Number
         run: |
