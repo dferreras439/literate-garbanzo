@@ -1,0 +1,3 @@
+apprise
+yt-dlp
+requests
