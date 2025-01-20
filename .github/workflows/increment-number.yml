@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Ensures full history is fetched
 
       - name: Increment Number
         run: |
@@ -28,10 +26,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Pull the latest changes to avoid conflicts
-          git pull --rebase origin main
-          
           git add number.txt
           git commit -m "Increment number to $(cat number.txt)"
           git push
