@@ -1,14 +1,8 @@
-name: Increment Number
-
-on:
-  workflow_dispatch: # Allows manual triggering
-  schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
-
 jobs:
   increment-number:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write  # Allows the workflow to push commits to the repository
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -17,12 +11,10 @@ jobs:
 
       - name: Read and Increment Number
         run: |
-          # Ensure the file exists
           if [ ! -f number.txt ]; then
             echo "0" > number.txt
           fi
 
-          # Read the number, increment it, and save it back
           number=$(cat number.txt)
           new_number=$((number + 1))
           echo $new_number > number.txt
@@ -35,4 +27,4 @@ jobs:
           
           git add number.txt
           git commit -m "Increment number to $(cat number.txt)"
-          git push
+          git push origin main
