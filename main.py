@@ -53,7 +53,7 @@ def fetch():
         #'force_write_download_archive': True,
         #'download_archive': 'downloaded.txt',
         #'break_on_existing': True,
-        'daterange': yt_dlp.utils.DateRange('now-1hour', 'now'), # New stateless mode.
+        'daterange': yt_dlp.utils.DateRange('now-1day', 'now'), # New stateless mode.
         'break_on_reject': True,
     }
     with  yt_dlp.YoutubeDL(ydl_opts) as ydl:
