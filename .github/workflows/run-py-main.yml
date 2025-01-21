@@ -6,7 +6,7 @@ on:
     branches:
       - main          # Runs when code is pushed to the 'main' branch
   schedule:
-    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+    - cron: '0 * * * *'  # Runs every hour (at the start of each hour)
 
 jobs:
   run-script:
@@ -30,4 +30,8 @@ jobs:
           fi
 
       - name: Run Main Script
+        env:
+          ENV_APP: ${{ secrets.ENV_APP }}
+          ENV_OAI: ${{ secrets.ENV_OAI }}
+          ENV_URL: ${{ secrets.ENV_URL }}
         run: python main.py
