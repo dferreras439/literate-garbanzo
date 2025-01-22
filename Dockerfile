@@ -12,4 +12,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 # Run main.py and terminate the container after 60 minutes
-CMD ["sh", "-c", "python main.py && sleep 3600 && exit"]
+CMD ["sh", "-c", "python main.py"]
