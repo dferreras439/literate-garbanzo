@@ -2,11 +2,11 @@ name: Run Main Script
 
 on:
   workflow_dispatch:  # Allows manual triggering from GitHub UI
-  push:
-    branches:
-      - main          # Runs when code is pushed to the 'main' branch
-  schedule:
-    - cron: '0 * * * *'  # Runs every hour (at the start of each hour)
+  #push:
+  #  branches:
+  #    - main          # Runs when code is pushed to the 'main' branch
+  #schedule:
+  #  - cron: '0 * * * *'  # Runs every hour (at the start of each hour)
 
 jobs:
   run-script:
