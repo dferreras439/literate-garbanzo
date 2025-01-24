@@ -87,9 +87,9 @@ def fetch():
         #'force_write_download_archive': True,
         #'download_archive': 'downloaded.txt',
         #'break_on_existing': True,
-        'daterange': yt_dlp.utils.DateRange('now-1day', 'now'), # New stateless mode. But no granularity.
+        #'daterange': yt_dlp.utils.DateRange('now-1day', 'now'), # New stateless mode. But no granularity.
         'break_on_reject': True,
-        #'match_filter': uploaded_within_last_hour,
+        'match_filter': uploaded_within_last_hour,
     }
     with  yt_dlp.YoutubeDL(ydl_opts) as ydl:
       ydl.add_post_processor(MyCustomPP(), when='after_video')
