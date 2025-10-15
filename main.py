@@ -100,26 +100,54 @@ def fetch():
           print("A video did not match the filter. Gracefully handled.")
 
 def send(body, title=''):
-    # Create an Apprise instance
-    apobj = apprise.Apprise()
+    """
+    Sends long messages to Discord via Apprise, respecting Discord's 2000-char limit,
+    never cutting mid-word, and ensuring ordered sequential delivery.
+    """
+    import re
+    import time
 
-    # Add the Discord webhook URL to the Apprise instance
+    # Discord message max (Apprise adds small metadata, so we stay below the edge)
+    MAX_LEN = 1950  
+
+    apobj = apprise.Apprise()
     apobj.add(ENV_APP)
 
-    # Function to split the message into chunks of MAX_MESSAGE_LENGTH
-    def chunk_message(message, chunk_size):
-        for i in range(0, len(message), chunk_size):
-            yield message[i:i + chunk_size]
+    # Combine title + body for accurate length accounting on first message
+    title_len = len(title)
+    available = MAX_LEN - title_len - 10  # -10 buffer for formatting/safety
 
-    # Get the message chunks
-    chunks = list(chunk_message(body, 1800))
+    # Clean up newlines / spaces
+    body = re.sub(r'\s+', ' ', body.strip())
 
-    # Send the first chunk with the title
-    if chunks:
-        apobj.notify(body=chunks[0], title=title)
+    chunks = []
+    current = []
 
-    # Send the remaining chunks without the title
-    for chunk in chunks[1:]:
-        apobj.notify(body=chunk, title='')
+    for word in body.split():
+        if len(' '.join(current + [word])) <= available:
+            current.append(word)
+        else:
+            chunks.append(' '.join(current))
+            current = [word]
+            # After the first chunk, full 1950 available
+            available = MAX_LEN
+    if current:
+        chunks.append(' '.join(current))
+
+    # Send in sequence (guaranteed order)
+    if not chunks:
+        return
+
+    # Send first message with title
+    apobj.notify(title=title, body=chunks[0])
+    print(f"Sent chunk 1/{len(chunks)} ({len(chunks[0])} chars)")
+
+    # Send subsequent messages in order
+    for i, chunk in enumerate(chunks[1:], start=2):
+        # small delay ensures strict ordering (Discord webhooks are async)
+        time.sleep(1)
+        apobj.notify(title='', body=chunk)
+        print(f"Sent chunk {i}/{len(chunks)} ({len(chunk)} chars)")
+
 
 fetch()
